@@ -5,15 +5,20 @@ import {
   useGetWatchlist,
   useAddToWatchlist,
   useRemoveFromWatchlist,
+  useSearchStocks,
+  useAddStock,
+  useDeleteStock,
   getGetWatchlistQueryKey,
+  getGetStocksQueryKey,
 } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Info, Bookmark, BookmarkCheck } from "lucide-react";
+import { Search, Info, Bookmark, BookmarkCheck, Plus, Trash2, RefreshCw, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 
 export default function StocksPage() {
@@ -21,10 +26,19 @@ export default function StocksPage() {
   const { data: watchlist } = useGetWatchlist();
   const [search, setSearch] = useState("");
   const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
+  const [avSearch, setAvSearch] = useState("");
+  const [avQuery, setAvQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const queryClient = useQueryClient();
 
   const addMutation = useAddToWatchlist();
   const removeMutation = useRemoveFromWatchlist();
+  const addStockMutation = useAddStock();
+  const deleteStockMutation = useDeleteStock();
+
+  const { data: searchResults, isFetching: isSearching } = useSearchStocks(avQuery, {
+    query: { enabled: avQuery.length >= 2 },
+  });
 
   const watchlistSet = new Set((watchlist || []).map((w) => w.ticker));
 
@@ -55,6 +69,30 @@ export default function StocksPage() {
     }
   };
 
+  const handleAddStock = (ticker: string, name: string) => {
+    addStockMutation.mutate({ ticker }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: getGetStocksQueryKey() });
+        toast({ title: "Stock Added", description: `${name} (${ticker}) added to the database.` });
+        setAvSearch("");
+        setAvQuery("");
+      },
+      onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err.message || "Failed to add stock." }),
+    });
+  };
+
+  const handleDeleteStock = (ticker: string) => {
+    if (!confirm(`Remove ${ticker} from the database? This will also remove it from any watchlists.`)) return;
+    deleteStockMutation.mutate({ ticker }, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: getGetStocksQueryKey() });
+        queryClient.invalidateQueries({ queryKey: getGetWatchlistQueryKey() });
+        toast({ title: "Removed", description: `${ticker} removed from database.` });
+      },
+      onError: () => toast({ variant: "destructive", title: "Error", description: "Failed to remove stock." }),
+    });
+  };
+
   const isBusy = addMutation.isPending || removeMutation.isPending;
 
   return (
@@ -64,16 +102,80 @@ export default function StocksPage() {
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Market Universe</h1>
           <p className="text-muted-foreground mt-1">Browse all available equities and their fundamentals.</p>
         </div>
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-          <Input
-            placeholder="Search tickers, names, sectors..."
-            className="pl-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex gap-2 w-full sm:w-auto">
+          <div className="relative flex-1 sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+            <Input
+              placeholder="Filter tickers, names..."
+              className="pl-9"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <Button
+            variant="outline"
+            className="gap-2 shrink-0"
+            onClick={() => setShowSearch(!showSearch)}
+          >
+            <Plus size={16} /> Add Stock
+          </Button>
         </div>
       </div>
+
+      {showSearch && (
+        <Card className="p-4 border-border">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-sm">Search Alpha Vantage</h3>
+            <Button variant="ghost" size="icon" onClick={() => { setShowSearch(false); setAvSearch(""); setAvQuery(""); }}>
+              <X size={16} />
+            </Button>
+          </div>
+          <div className="flex gap-2 mb-3">
+            <Input
+              placeholder="Search by company name or ticker..."
+              value={avSearch}
+              onChange={(e) => setAvSearch(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") setAvQuery(avSearch); }}
+              className="flex-1"
+            />
+            <Button onClick={() => setAvQuery(avSearch)} disabled={avSearch.length < 2 || isSearching}>
+              {isSearching ? <RefreshCw size={16} className="animate-spin" /> : <Search size={16} />}
+            </Button>
+          </div>
+          {searchResults && searchResults.length > 0 && (
+            <div className="space-y-2">
+              {searchResults.map(r => (
+                <div key={r.ticker} className="flex items-center justify-between p-2 rounded border border-border bg-muted/20 text-sm">
+                  <div>
+                    <span className="font-bold text-foreground">{r.ticker}</span>
+                    <span className="text-muted-foreground ml-2">{r.name}</span>
+                    <Badge variant="outline" className="ml-2 text-xs">{r.type}</Badge>
+                  </div>
+                  {r.inDatabase ? (
+                    <Badge variant="secondary" className="text-xs">Already added</Badge>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="gap-1"
+                      disabled={addStockMutation.isPending}
+                      onClick={() => handleAddStock(r.ticker, r.name)}
+                    >
+                      <Plus size={14} /> Add
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          {avQuery && searchResults?.length === 0 && !isSearching && (
+            <p className="text-sm text-muted-foreground text-center py-4">No US-listed stocks found for "{avQuery}"</p>
+          )}
+          <p className="text-xs text-muted-foreground mt-3">
+            Requires Alpha Vantage API key. Free tier allows 25 requests/day.
+          </p>
+        </Card>
+      )}
 
       <Card className="border-border overflow-hidden">
         <div className="overflow-x-auto">
@@ -135,8 +237,18 @@ export default function StocksPage() {
                           >
                             {watched ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
                           </Button>
-                          <Button variant="ghost" size="icon" onClick={() => setSelectedTicker(stock.ticker)}>
+                          <Button variant="ghost" size="icon" onClick={() => setSelectedTicker(stock.ticker)} title="View details">
                             <Info size={16} />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Remove from database"
+                            disabled={deleteStockMutation.isPending}
+                            onClick={() => handleDeleteStock(stock.ticker)}
+                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 size={16} />
                           </Button>
                         </div>
                       </td>
@@ -220,30 +332,22 @@ function StockDetailsModal({
                 </Button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">Market Cap</div>
-                  <div className="font-mono text-lg">${stock.marketCapB.toFixed(1)}B</div>
-                </div>
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">Beta</div>
-                  <div className="font-mono text-lg">{stock.beta.toFixed(2)}</div>
-                </div>
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">Current Ratio</div>
-                  <div className="font-mono text-lg">{stock.currentRatio.toFixed(2)}</div>
-                </div>
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">P/E Ratio</div>
-                  <div className="font-mono text-lg">{stock.peRatio.toFixed(1)}</div>
-                </div>
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">EPS Growth</div>
-                  <div className="font-mono text-lg">{stock.epsGrowth.toFixed(1)}%</div>
-                </div>
-                <div className="bg-card p-3 rounded shadow-sm border border-border">
-                  <div className="text-xs text-muted-foreground">ROE</div>
-                  <div className="font-mono text-lg">{stock.roe.toFixed(1)}%</div>
-                </div>
+                {[
+                  { label: "Market Cap", value: `$${stock.marketCapB.toFixed(1)}B` },
+                  { label: "Beta", value: stock.beta.toFixed(2) },
+                  { label: "Current Ratio", value: stock.currentRatio.toFixed(2) },
+                  { label: "P/E Ratio", value: stock.peRatio.toFixed(1) },
+                  { label: "EPS Growth", value: `${stock.epsGrowth.toFixed(1)}%` },
+                  { label: "ROE", value: `${stock.roe.toFixed(1)}%` },
+                  { label: "Revenue Growth", value: `${stock.revenueGrowth.toFixed(1)}%` },
+                  { label: "Profit Margin", value: `${stock.profitMargin.toFixed(1)}%` },
+                  { label: "Dividend Yield", value: `${stock.dividendYield.toFixed(2)}%` },
+                ].map(item => (
+                  <div key={item.label} className="bg-card p-3 rounded shadow-sm border border-border">
+                    <div className="text-xs text-muted-foreground">{item.label}</div>
+                    <div className="font-mono text-lg">{item.value}</div>
+                  </div>
+                ))}
               </div>
             </div>
           )}

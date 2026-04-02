@@ -30,6 +30,7 @@ import type {
   ScreenResult,
   SectorCount,
   Stock,
+  StockSearchResult,
   SuccessResponse,
   WatchlistItem,
 } from "./api.schemas";
@@ -357,6 +358,261 @@ export function useGetStocks<
 }
 
 /**
+ * @summary Search for stocks by name or ticker via Alpha Vantage
+ */
+export const getSearchStocksUrl = (query: string) => {
+  return `/api/stocks/search/${query}`;
+};
+
+export const searchStocks = async (
+  query: string,
+  options?: RequestInit,
+): Promise<StockSearchResult[]> => {
+  return customFetch<StockSearchResult[]>(getSearchStocksUrl(query), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getSearchStocksQueryKey = (query: string) => {
+  return [`/api/stocks/search/${query}`] as const;
+};
+
+export const getSearchStocksQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchStocks>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  query: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof searchStocks>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchStocksQueryKey(query);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchStocks>>> = ({
+    signal,
+  }) => searchStocks(query, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!query,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof searchStocks>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type SearchStocksQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchStocks>>
+>;
+export type SearchStocksQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Search for stocks by name or ticker via Alpha Vantage
+ */
+
+export function useSearchStocks<
+  TData = Awaited<ReturnType<typeof searchStocks>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  query: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof searchStocks>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getSearchStocksQueryOptions(query, options);
+
+  const _query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ..._query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Add a stock by fetching from Alpha Vantage
+ */
+export const getAddStockUrl = (ticker: string) => {
+  return `/api/stocks/add/${ticker}`;
+};
+
+export const addStock = async (
+  ticker: string,
+  options?: RequestInit,
+): Promise<Stock> => {
+  return customFetch<Stock>(getAddStockUrl(ticker), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getAddStockMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  const mutationKey = ["addStock"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addStock>>,
+    { ticker: string }
+  > = (props) => {
+    const { ticker } = props ?? {};
+
+    return addStock(ticker, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AddStockMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addStock>>
+>;
+
+export type AddStockMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Add a stock by fetching from Alpha Vantage
+ */
+export const useAddStock = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof addStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  return useMutation(getAddStockMutationOptions(options));
+};
+
+/**
+ * @summary Refresh a stock's data from Alpha Vantage
+ */
+export const getRefreshStockUrl = (ticker: string) => {
+  return `/api/stocks/refresh/${ticker}`;
+};
+
+export const refreshStock = async (
+  ticker: string,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getRefreshStockUrl(ticker), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getRefreshStockMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof refreshStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  const mutationKey = ["refreshStock"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof refreshStock>>,
+    { ticker: string }
+  > = (props) => {
+    const { ticker } = props ?? {};
+
+    return refreshStock(ticker, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RefreshStockMutationResult = NonNullable<
+  Awaited<ReturnType<typeof refreshStock>>
+>;
+
+export type RefreshStockMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Refresh a stock's data from Alpha Vantage
+ */
+export const useRefreshStock = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof refreshStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  return useMutation(getRefreshStockMutationOptions(options));
+};
+
+/**
  * @summary Get a stock by ticker
  */
 export const getGetStockUrl = (ticker: string) => {
@@ -440,6 +696,90 @@ export function useGetStock<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+/**
+ * @summary Delete a stock from the database
+ */
+export const getDeleteStockUrl = (ticker: string) => {
+  return `/api/stocks/${ticker}`;
+};
+
+export const deleteStock = async (
+  ticker: string,
+  options?: RequestInit,
+): Promise<SuccessResponse> => {
+  return customFetch<SuccessResponse>(getDeleteStockUrl(ticker), {
+    ...options,
+    method: "DELETE",
+  });
+};
+
+export const getDeleteStockMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  const mutationKey = ["deleteStock"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteStock>>,
+    { ticker: string }
+  > = (props) => {
+    const { ticker } = props ?? {};
+
+    return deleteStock(ticker, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteStockMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteStock>>
+>;
+
+export type DeleteStockMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Delete a stock from the database
+ */
+export const useDeleteStock = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteStock>>,
+    TError,
+    { ticker: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteStock>>,
+  TError,
+  { ticker: string },
+  TContext
+> => {
+  return useMutation(getDeleteStockMutationOptions(options));
+};
 
 /**
  * @summary Get user's criteria sets

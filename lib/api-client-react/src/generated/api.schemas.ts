@@ -140,3 +140,11 @@ export interface SectorCount {
   sector: string;
   count: number;
 }
+
+export interface StockSearchResult {
+  ticker: string;
+  name: string;
+  type: string;
+  region: string;
+  inDatabase: boolean;
+}

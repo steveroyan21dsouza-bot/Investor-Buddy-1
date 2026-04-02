@@ -59,6 +59,58 @@ export const GetStocksResponseItem = zod.object({
 export const GetStocksResponse = zod.array(GetStocksResponseItem);
 
 /**
+ * @summary Search for stocks by name or ticker via Alpha Vantage
+ */
+export const SearchStocksParams = zod.object({
+  query: zod.coerce.string(),
+});
+
+export const SearchStocksResponseItem = zod.object({
+  ticker: zod.string(),
+  name: zod.string(),
+  type: zod.string(),
+  region: zod.string(),
+  inDatabase: zod.boolean(),
+});
+export const SearchStocksResponse = zod.array(SearchStocksResponseItem);
+
+/**
+ * @summary Add a stock by fetching from Alpha Vantage
+ */
+export const AddStockParams = zod.object({
+  ticker: zod.coerce.string(),
+});
+
+export const AddStockResponse = zod.object({
+  ticker: zod.string(),
+  name: zod.string(),
+  sector: zod.string(),
+  price: zod.number(),
+  peRatio: zod.number(),
+  debtToEquity: zod.number(),
+  epsGrowth: zod.number(),
+  dividendYield: zod.number(),
+  roe: zod.number(),
+  revenueGrowth: zod.number(),
+  profitMargin: zod.number(),
+  currentRatio: zod.number(),
+  marketCapB: zod.number(),
+  beta: zod.number(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Refresh a stock's data from Alpha Vantage
+ */
+export const RefreshStockParams = zod.object({
+  ticker: zod.coerce.string(),
+});
+
+export const RefreshStockResponse = zod.object({
+  success: zod.boolean(),
+});
+
+/**
  * @summary Get a stock by ticker
  */
 export const GetStockParams = zod.object({
@@ -81,6 +133,17 @@ export const GetStockResponse = zod.object({
   marketCapB: zod.number(),
   beta: zod.number(),
   updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a stock from the database
+ */
+export const DeleteStockParams = zod.object({
+  ticker: zod.coerce.string(),
+});
+
+export const DeleteStockResponse = zod.object({
+  success: zod.boolean(),
 });
 
 /**

@@ -105,6 +105,83 @@ paths:
                 items:
                   $ref: "#/components/schemas/Stock"
 
+  /stocks/search/{query}:
+    get:
+      operationId: searchStocks
+      tags: [stocks]
+      summary: Search for stocks by name or ticker via Alpha Vantage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StockSearchResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stocks/add/{ticker}:
+    post:
+      operationId: addStock
+      tags: [stocks]
+      summary: Add a stock by fetching from Alpha Vantage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Stock added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Stock"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /stocks/refresh/{ticker}:
+    post:
+      operationId: refreshStock
+      tags: [stocks]
+      summary: Refresh a stock's data from Alpha Vantage
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Stock refreshed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
   /stocks/{ticker}:
     get:
       operationId: getStock
@@ -131,6 +208,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+    delete:
+      operationId: deleteStock
+      tags: [stocks]
+      summary: Delete a stock from the database
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
 
   /criteria:
     get:
@@ -684,3 +781,23 @@ components:
       required:
         - sector
         - count
+
+    StockSearchResult:
+      type: object
+      properties:
+        ticker:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        region:
+          type: string
+        inDatabase:
+          type: boolean
+      required:
+        - ticker
+        - name
+        - type
+        - region
+        - inDatabase

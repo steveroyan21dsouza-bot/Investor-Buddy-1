@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Plus, Trash2, ArrowLeft, Save } from "lucide-react";
+import { Plus, Trash2, ArrowLeft, Save, Zap } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { CriterionOperator } from "@workspace/api-client-react";
 
@@ -32,14 +32,66 @@ const OPERATORS = [
   { value: "between", label: "Between" }
 ];
 
+const TEMPLATES = [
+  {
+    name: "Value Investing",
+    desc: "Low P/E, low debt, strong margins",
+    criteria: [
+      { metric: "pe_ratio", operator: "<", value: 20, value2: null },
+      { metric: "debt_to_equity", operator: "<", value: 1.0, value2: null },
+      { metric: "profit_margin", operator: ">", value: 10, value2: null },
+      { metric: "current_ratio", operator: ">", value: 1.0, value2: null },
+    ],
+  },
+  {
+    name: "Growth Stocks",
+    desc: "High EPS & revenue growth, strong ROE",
+    criteria: [
+      { metric: "eps_growth", operator: ">", value: 15, value2: null },
+      { metric: "revenue_growth", operator: ">", value: 10, value2: null },
+      { metric: "roe", operator: ">", value: 15, value2: null },
+    ],
+  },
+  {
+    name: "Dividend Income",
+    desc: "High yield, sustainable payout",
+    criteria: [
+      { metric: "dividend_yield", operator: ">", value: 2.5, value2: null },
+      { metric: "pe_ratio", operator: "<", value: 30, value2: null },
+      { metric: "debt_to_equity", operator: "<", value: 2.0, value2: null },
+      { metric: "profit_margin", operator: ">", value: 8, value2: null },
+    ],
+  },
+  {
+    name: "Low Volatility",
+    desc: "Low beta, stable dividends",
+    criteria: [
+      { metric: "beta", operator: "<", value: 0.8, value2: null },
+      { metric: "dividend_yield", operator: ">", value: 1.5, value2: null },
+      { metric: "current_ratio", operator: ">", value: 0.8, value2: null },
+    ],
+  },
+  {
+    name: "Quality at Any Price",
+    desc: "High ROE, strong margins, low debt",
+    criteria: [
+      { metric: "roe", operator: ">", value: 20, value2: null },
+      { metric: "profit_margin", operator: ">", value: 15, value2: null },
+      { metric: "debt_to_equity", operator: "<", value: 1.5, value2: null },
+      { metric: "revenue_growth", operator: ">", value: 5, value2: null },
+    ],
+  },
+];
+
 export default function CriteriaFormPage() {
   const [, setLocation] = useLocation();
   const params = useParams();
   const isEditing = !!params.id && params.id !== "new";
   const queryClient = useQueryClient();
-  
+  const [showTemplates, setShowTemplates] = useState(false);
+
   const { data: criteriaSets } = useGetCriteriaSets();
-  
+
   const createMutation = useCreateCriteriaSet();
   const updateMutation = useUpdateCriteriaSet();
 
@@ -57,6 +109,13 @@ export default function CriteriaFormPage() {
       }
     }
   }, [isEditing, criteriaSets, params.id]);
+
+  const applyTemplate = (template: typeof TEMPLATES[0]) => {
+    setName(template.name);
+    setCriteria(template.criteria);
+    setShowTemplates(false);
+    toast({ title: "Template Applied", description: `"${template.name}" loaded — customize as needed.` });
+  };
 
   const handleAddCriterion = () => {
     setCriteria([...criteria, { metric: "eps_growth", operator: ">", value: 10, value2: null }]);
@@ -82,7 +141,6 @@ export default function CriteriaFormPage() {
       return;
     }
 
-    // Process numeric values
     const processedCriteria = criteria.map(c => ({
       metric: c.metric,
       operator: c.operator as CriterionOperator,
@@ -130,6 +188,35 @@ export default function CriteriaFormPage() {
         </div>
       </div>
 
+      {!isEditing && (
+        <Card className="border-border">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div>
+              <CardTitle className="flex items-center gap-2"><Zap size={18} className="text-primary" /> Quick-Start Templates</CardTitle>
+              <CardDescription>Pick a pre-built strategy as your starting point</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" onClick={() => setShowTemplates(!showTemplates)}>
+              {showTemplates ? "Hide" : "Show Templates"}
+            </Button>
+          </CardHeader>
+          {showTemplates && (
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-0">
+              {TEMPLATES.map(t => (
+                <button
+                  key={t.name}
+                  onClick={() => applyTemplate(t)}
+                  className="text-left p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/60 hover:border-primary/50 transition-colors"
+                >
+                  <div className="font-semibold text-sm text-foreground mb-1">{t.name}</div>
+                  <div className="text-xs text-muted-foreground">{t.desc}</div>
+                  <div className="text-xs text-primary mt-2">{t.criteria.length} rules</div>
+                </button>
+              ))}
+            </CardContent>
+          )}
+        </Card>
+      )}
+
       <Card className="border-border">
         <CardHeader>
           <CardTitle>Configuration</CardTitle>
@@ -138,11 +225,11 @@ export default function CriteriaFormPage() {
         <CardContent>
           <div className="space-y-2 max-w-md">
             <Label htmlFor="name">Strategy Name</Label>
-            <Input 
-              id="name" 
-              value={name} 
-              onChange={e => setName(e.target.value)} 
-              placeholder="e.g. Value & Growth Hybrid" 
+            <Input
+              id="name"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Value & Growth Hybrid"
             />
           </div>
         </CardContent>
@@ -187,26 +274,26 @@ export default function CriteriaFormPage() {
                   </div>
                   <div className="space-y-1">
                     <Label className="text-xs text-muted-foreground">Value</Label>
-                    <Input 
-                      type="number" 
-                      value={c.value} 
-                      onChange={(e) => handleUpdateCriterion(i, "value", e.target.value)} 
+                    <Input
+                      type="number"
+                      value={c.value}
+                      onChange={(e) => handleUpdateCriterion(i, "value", e.target.value)}
                     />
                   </div>
                   {c.operator === "between" ? (
                     <div className="space-y-1">
                       <Label className="text-xs text-muted-foreground">Upper Value</Label>
-                      <Input 
-                        type="number" 
-                        value={c.value2 || ""} 
-                        onChange={(e) => handleUpdateCriterion(i, "value2", e.target.value)} 
+                      <Input
+                        type="number"
+                        value={c.value2 || ""}
+                        onChange={(e) => handleUpdateCriterion(i, "value2", e.target.value)}
                       />
                     </div>
                   ) : <div className="hidden sm:block"></div>}
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => handleRemoveCriterion(i)}
                   className="text-destructive hover:bg-destructive/10 hover:text-destructive shrink-0"
                 >
@@ -218,7 +305,7 @@ export default function CriteriaFormPage() {
         </CardContent>
         <div className="p-6 pt-0 mt-4 border-t border-border flex justify-end">
           <Button onClick={handleSave} className="gap-2 w-full sm:w-auto" disabled={createMutation.isPending || updateMutation.isPending}>
-            <Save size={16} /> 
+            <Save size={16} />
             {isEditing ? "Save Changes" : "Create Strategy"}
           </Button>
         </div>

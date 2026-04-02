@@ -22,5 +22,6 @@ export * from "./screenRequest";
 export * from "./screenResult";
 export * from "./sectorCount";
 export * from "./stock";
+export * from "./stockSearchResult";
 export * from "./successResponse";
 export * from "./watchlistItem";
