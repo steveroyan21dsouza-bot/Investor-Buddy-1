@@ -6,7 +6,7 @@ Investor Buddy lets users define custom screening criteria, evaluate stocks agai
 
 > Built as a final project for ENTI 674 at the Haskayne School of Business, University of Calgary.
 
-🔗 **Live App:** [investor-buddy--sbeve21.replit.app](https://investor-buddy--sbeve21.replit.app)
+🔗 **Live App:** [investor-buddy-1--sbeve21.replit.app](https://investor-buddy-1--sbeve21.replit.app/)
 
 ---
 
