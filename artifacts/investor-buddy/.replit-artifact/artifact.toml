@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Investor Buddy"
+version = "1.0.0"
+id = "artifacts/investor-buddy"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25001
+
+[services.development]
+run = "pnpm --filter @workspace/investor-buddy run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/investor-buddy", "run", "build" ]
+publicDir = "artifacts/investor-buddy/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25001"
+BASE_PATH = "/"
