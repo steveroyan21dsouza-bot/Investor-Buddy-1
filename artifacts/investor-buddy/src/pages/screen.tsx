@@ -257,7 +257,7 @@ export default function ScreenPage() {
                 <p className="text-sm font-semibold text-foreground">
                   {passCount === 1 ? "stock matched" : "stocks matched"}
                 </p>
-                <p className="text-xs text-muted-foreground">out of 77 screened</p>
+                <p className="text-xs text-muted-foreground">out of {sortedResults.length} screened</p>
               </div>
             </div>
 

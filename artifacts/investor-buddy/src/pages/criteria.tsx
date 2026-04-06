@@ -1,4 +1,4 @@
-import { useGetCriteriaSets, useDeleteCriteriaSet } from "@workspace/api-client-react";
+import { useGetCriteriaSets, useDeleteCriteriaSet, useGetStocks } from "@workspace/api-client-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -32,6 +32,8 @@ const OP_SYMBOLS: Record<string, string> = {
 
 export default function CriteriaPage() {
   const { data: criteriaSets, isLoading } = useGetCriteriaSets();
+  const { data: stocks } = useGetStocks();
+  const stockCount = stocks?.length ?? 0;
   const deleteMutation = useDeleteCriteriaSet();
   const queryClient = useQueryClient();
 
@@ -135,7 +137,7 @@ export default function CriteriaPage() {
           </div>
           <h3 className="text-lg font-bold text-foreground">No criteria sets yet</h3>
           <p className="text-muted-foreground max-w-md mx-auto mt-2 mb-6">
-            Create a criteria set to filter 77 stocks by valuation, growth, profitability, and risk.
+            Create a criteria set to filter {stockCount > 0 ? stockCount : "120+"} stocks by valuation, growth, profitability, and risk.
           </p>
           <Link href="/criteria/new">
             <Button>Create your first set</Button>

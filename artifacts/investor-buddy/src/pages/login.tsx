@@ -85,7 +85,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-xs text-muted-foreground/50 text-center max-w-xs">
-          Screening across 77 S&P 500 stocks · Built with React, Express, and Anthropic Claude
+          Screening across 120+ stocks · Built with React, Express, and Anthropic Claude
         </p>
       </div>
 
