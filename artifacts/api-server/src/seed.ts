@@ -785,16 +785,41 @@ const SEED_STOCKS = [
     "currentRatio": 1.44,
     "marketCapB": 454,
     "beta": 0.93
-  }
+  },
+  { ticker: "CSCO", name: "Cisco Systems Inc.", sector: "Technology", price: 59.2, peRatio: 17.1, debtToEquity: 0.23, epsGrowth: 6, dividendYield: 2.91, roe: 33.8, revenueGrowth: 1, profitMargin: 21.8, currentRatio: 1.57, marketCapB: 239, beta: 0.83 },
+  { ticker: "DIS", name: "Walt Disney Co.", sector: "Consumer", price: 111.4, peRatio: 42.2, debtToEquity: 0.47, epsGrowth: 78, dividendYield: 0, roe: 5.7, revenueGrowth: 4, profitMargin: 4.3, currentRatio: 1.22, marketCapB: 203, beta: 1.21 },
+  { ticker: "WFC", name: "Wells Fargo & Co.", sector: "Financial", price: 70.8, peRatio: 13.2, debtToEquity: 1.09, epsGrowth: 28, dividendYield: 2.05, roe: 12.1, revenueGrowth: 10, profitMargin: 24.8, currentRatio: 0.88, marketCapB: 241, beta: 1.14 },
+  { ticker: "MRK", name: "Merck & Co. Inc.", sector: "Healthcare", price: 91.3, peRatio: 14.1, debtToEquity: 0.72, epsGrowth: -1, dividendYield: 3.47, roe: 37.2, revenueGrowth: 7, profitMargin: 21.3, currentRatio: 1.22, marketCapB: 231, beta: 0.39 },
+  { ticker: "TXN", name: "Texas Instruments Inc.", sector: "Technology", price: 171.5, peRatio: 31.4, debtToEquity: 1.08, epsGrowth: -33, dividendYield: 2.96, roe: 44.7, revenueGrowth: -11, profitMargin: 33.5, currentRatio: 3.69, marketCapB: 156, beta: 1.01 },
+  { ticker: "NOW", name: "ServiceNow Inc.", sector: "Technology", price: 871.2, peRatio: 89.5, debtToEquity: 0.17, epsGrowth: 64, dividendYield: 0, roe: 15.1, revenueGrowth: 22, profitMargin: 14.3, currentRatio: 1.09, marketCapB: 179, beta: 1.12 },
+  { ticker: "NKE", name: "Nike Inc.", sector: "Consumer", price: 75.6, peRatio: 21.8, debtToEquity: 1.86, epsGrowth: -26, dividendYield: 2.19, roe: 26.4, revenueGrowth: -10, profitMargin: 9.4, currentRatio: 2.52, marketCapB: 113, beta: 0.96 },
+  { ticker: "MS", name: "Morgan Stanley", sector: "Financial", price: 114.3, peRatio: 17.8, debtToEquity: 3.52, epsGrowth: 24, dividendYield: 3.15, roe: 13.7, revenueGrowth: 14, profitMargin: 17.4, currentRatio: 0.81, marketCapB: 193, beta: 1.31 },
+  { ticker: "C", name: "Citigroup Inc.", sector: "Financial", price: 70.1, peRatio: 12.9, debtToEquity: 1.48, epsGrowth: 37, dividendYield: 3.11, roe: 7.2, revenueGrowth: 4, profitMargin: 13.5, currentRatio: 0.78, marketCapB: 135, beta: 1.41 },
+  { ticker: "MDT", name: "Medtronic plc", sector: "Healthcare", price: 88.7, peRatio: 16.3, debtToEquity: 0.51, epsGrowth: -6, dividendYield: 3.41, roe: 8.8, revenueGrowth: 3, profitMargin: 13.9, currentRatio: 2.19, marketCapB: 116, beta: 0.62 },
+  { ticker: "DHR", name: "Danaher Corp.", sector: "Healthcare", price: 230.1, peRatio: 32.5, debtToEquity: 0.28, epsGrowth: -37, dividendYield: 0.41, roe: 8.9, revenueGrowth: -6, profitMargin: 18.1, currentRatio: 1.62, marketCapB: 165, beta: 0.73 },
+  { ticker: "QCOM", name: "Qualcomm Inc.", sector: "Technology", price: 153.8, peRatio: 17.4, debtToEquity: 1.66, epsGrowth: 33, dividendYield: 2.08, roe: 42.3, revenueGrowth: 9, profitMargin: 26.7, currentRatio: 2.67, marketCapB: 172, beta: 1.32 },
+  { ticker: "TGT", name: "Target Corp.", sector: "Consumer", price: 130.4, peRatio: 13.5, debtToEquity: 2.37, epsGrowth: -18, dividendYield: 3.54, roe: 29.3, revenueGrowth: -4, profitMargin: 4.2, currentRatio: 0.91, marketCapB: 60, beta: 0.72 },
+  { ticker: "UPS", name: "United Parcel Service", sector: "Industrial", price: 105.3, peRatio: 16.1, debtToEquity: 1.52, epsGrowth: -23, dividendYield: 6.07, roe: 47.2, revenueGrowth: -9, profitMargin: 7.5, currentRatio: 1.17, marketCapB: 90, beta: 0.96 },
+  { ticker: "PANW", name: "Palo Alto Networks", sector: "Technology", price: 172.6, peRatio: 48.2, debtToEquity: 0.32, epsGrowth: 411, dividendYield: 0, roe: 12.6, revenueGrowth: 16, profitMargin: 9.3, currentRatio: 0.82, marketCapB: 112, beta: 1.07 },
+  { ticker: "SO", name: "Southern Company", sector: "Utilities", price: 87.1, peRatio: 22.4, debtToEquity: 1.68, epsGrowth: 42, dividendYield: 3.27, roe: 13.5, revenueGrowth: 6, profitMargin: 15.2, currentRatio: 0.77, marketCapB: 96, beta: 0.41 },
+  { ticker: "DUK", name: "Duke Energy Corp.", sector: "Utilities", price: 109.5, peRatio: 19.8, debtToEquity: 1.91, epsGrowth: 3, dividendYield: 3.68, roe: 9.1, revenueGrowth: 5, profitMargin: 13.8, currentRatio: 0.59, marketCapB: 84, beta: 0.43 },
+  { ticker: "BMY", name: "Bristol-Myers Squibb", sector: "Healthcare", price: 56.8, peRatio: 17.3, debtToEquity: 2.14, epsGrowth: -91, dividendYield: 4.58, roe: 7.8, revenueGrowth: 7, profitMargin: 5.2, currentRatio: 1.25, marketCapB: 113, beta: 0.34 },
+  { ticker: "GILD", name: "Gilead Sciences Inc.", sector: "Healthcare", price: 110.2, peRatio: 21.5, debtToEquity: 1.31, epsGrowth: 48, dividendYield: 3.12, roe: 28.4, revenueGrowth: 6, profitMargin: 23.1, currentRatio: 1.59, marketCapB: 137, beta: 0.31 },
+  { ticker: "ETN", name: "Eaton Corp. plc", sector: "Industrial", price: 291.4, peRatio: 29.7, debtToEquity: 0.38, epsGrowth: 20, dividendYield: 1.37, roe: 20.3, revenueGrowth: 8, profitMargin: 16.5, currentRatio: 1.31, marketCapB: 116, beta: 1.08 },
+  { ticker: "ITW", name: "Illinois Tool Works", sector: "Industrial", price: 254.7, peRatio: 23.1, debtToEquity: 999, epsGrowth: -2, dividendYield: 2.43, roe: 999, revenueGrowth: -1, profitMargin: 22.9, currentRatio: 1.36, marketCapB: 79, beta: 1.05 },
+  { ticker: "F", name: "Ford Motor Co.", sector: "Consumer", price: 10.2, peRatio: 12.3, debtToEquity: 3.44, epsGrowth: -82, dividendYield: 6.69, roe: 5.1, revenueGrowth: 5, profitMargin: 1.6, currentRatio: 1.16, marketCapB: 41, beta: 1.53 },
+  { ticker: "GM", name: "General Motors Co.", sector: "Consumer", price: 49.1, peRatio: 5.9, debtToEquity: 1.89, epsGrowth: 26, dividendYield: 1.05, roe: 16.5, revenueGrowth: 9, profitMargin: 5.2, currentRatio: 1.07, marketCapB: 54, beta: 1.33 },
+  { ticker: "SLB", name: "SLB (Schlumberger)", sector: "Energy", price: 41.3, peRatio: 14.2, debtToEquity: 0.54, epsGrowth: 14, dividendYield: 2.91, roe: 21.9, revenueGrowth: 10, profitMargin: 11.5, currentRatio: 1.31, marketCapB: 59, beta: 1.24 },
+  { ticker: "MO", name: "Altria Group Inc.", sector: "Consumer", price: 54.7, peRatio: 10.2, debtToEquity: 999, epsGrowth: 5, dividendYield: 7.34, roe: 999, revenueGrowth: 1, profitMargin: 46.7, currentRatio: 0.42, marketCapB: 93, beta: 0.55 },
+  { ticker: "ISRG", name: "Intuitive Surgical Inc.", sector: "Healthcare", price: 494.3, peRatio: 72.4, debtToEquity: 0.0, epsGrowth: 25, dividendYield: 0, roe: 15.3, revenueGrowth: 16, profitMargin: 22.1, currentRatio: 4.37, marketCapB: 176, beta: 1.07 },
+  { ticker: "PYPL", name: "PayPal Holdings Inc.", sector: "Financial", price: 76.4, peRatio: 17.8, debtToEquity: 0.59, epsGrowth: 20, dividendYield: 0, roe: 19.5, revenueGrowth: 7, profitMargin: 15.2, currentRatio: 1.28, marketCapB: 77, beta: 1.52 },
+  { ticker: "USB", name: "U.S. Bancorp", sector: "Financial", price: 42.7, peRatio: 12.8, debtToEquity: 1.22, epsGrowth: 4, dividendYield: 4.18, roe: 11.8, revenueGrowth: 2, profitMargin: 18.5, currentRatio: 0.72, marketCapB: 66, beta: 0.98 }
 ] as const;
 
 export async function seedStocksIfEmpty() {
-  const [{ count }] = await db.select({ count: sql`count(*)`.mapWith(Number) }).from(stocksTable);
-  if (count > 0) return;
-
-  console.log("[seed] Seeding", SEED_STOCKS.length, "stocks...");
+  console.log("[seed] Checking for new stocks to add...");
   await db.insert(stocksTable).values(
     SEED_STOCKS.map(s => ({ ...s, updatedAt: new Date() }))
   ).onConflictDoNothing();
-  console.log("[seed] Done.");
+  console.log("[seed] Stock seed complete.");
 }
