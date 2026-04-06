@@ -26,6 +26,7 @@ import type {
   DashboardSummary,
   ErrorResponse,
   HealthStatus,
+  RefreshAllStocks202,
   ScreenRequest,
   ScreenResult,
   SectorCount,
@@ -529,7 +530,7 @@ export const useAddStock = <
 };
 
 /**
- * @summary Refresh a stock's data from Alpha Vantage
+ * @summary Refresh a single stock's data from Finnhub
  */
 export const getRefreshStockUrl = (ticker: string) => {
   return `/api/stocks/refresh/${ticker}`;
@@ -590,7 +591,7 @@ export type RefreshStockMutationResult = NonNullable<
 export type RefreshStockMutationError = ErrorType<unknown>;
 
 /**
- * @summary Refresh a stock's data from Alpha Vantage
+ * @summary Refresh a single stock's data from Finnhub
  */
 export const useRefreshStock = <
   TError = ErrorType<unknown>,
@@ -610,6 +611,87 @@ export const useRefreshStock = <
   TContext
 > => {
   return useMutation(getRefreshStockMutationOptions(options));
+};
+
+/**
+ * @summary Refresh prices for all stocks via Finnhub (background job)
+ */
+export const getRefreshAllStocksUrl = () => {
+  return `/api/stocks/refresh-all`;
+};
+
+export const refreshAllStocks = async (
+  options?: RequestInit,
+): Promise<RefreshAllStocks202> => {
+  return customFetch<RefreshAllStocks202>(getRefreshAllStocksUrl(), {
+    ...options,
+    method: "POST",
+  });
+};
+
+export const getRefreshAllStocksMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshAllStocks>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof refreshAllStocks>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["refreshAllStocks"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof refreshAllStocks>>,
+    void
+  > = () => {
+    return refreshAllStocks(requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RefreshAllStocksMutationResult = NonNullable<
+  Awaited<ReturnType<typeof refreshAllStocks>>
+>;
+
+export type RefreshAllStocksMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Refresh prices for all stocks via Finnhub (background job)
+ */
+export const useRefreshAllStocks = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof refreshAllStocks>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof refreshAllStocks>>,
+  TError,
+  void,
+  TContext
+> => {
+  return useMutation(getRefreshAllStocksMutationOptions(options));
 };
 
 /**

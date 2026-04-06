@@ -100,7 +100,7 @@ export const AddStockResponse = zod.object({
 });
 
 /**
- * @summary Refresh a stock's data from Alpha Vantage
+ * @summary Refresh a single stock's data from Finnhub
  */
 export const RefreshStockParams = zod.object({
   ticker: zod.coerce.string(),

@@ -18,6 +18,7 @@ export * from "./criterionResult";
 export * from "./dashboardSummary";
 export * from "./errorResponse";
 export * from "./healthStatus";
+export * from "./refreshAllStocks202";
 export * from "./screenRequest";
 export * from "./screenResult";
 export * from "./sectorCount";

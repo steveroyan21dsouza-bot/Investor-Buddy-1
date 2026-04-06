@@ -8,6 +8,7 @@ import {
   useSearchStocks,
   useAddStock,
   useDeleteStock,
+  useRefreshAllStocks,
   getGetWatchlistQueryKey,
   getGetStocksQueryKey,
 } from "@workspace/api-client-react";
@@ -35,6 +36,17 @@ export default function StocksPage() {
   const removeMutation = useRemoveFromWatchlist();
   const addStockMutation = useAddStock();
   const deleteStockMutation = useDeleteStock();
+  const refreshAllMutation = useRefreshAllStocks();
+
+  const handleRefreshAll = () => {
+    refreshAllMutation.mutate(undefined, {
+      onSuccess: () => toast({
+        title: "Price refresh started",
+        description: "All stock prices will update over the next ~2 minutes. Reload the page when done.",
+      }),
+      onError: () => toast({ variant: "destructive", title: "Refresh failed", description: "Could not start refresh. Check FINNHUB_API_KEY." }),
+    });
+  };
 
   const { data: searchResults, isFetching: isSearching } = useSearchStocks(avQuery, {
     query: { enabled: avQuery.length >= 2 },
@@ -102,8 +114,8 @@ export default function StocksPage() {
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Market Universe</h1>
           <p className="text-muted-foreground mt-1">Browse all available equities and their fundamentals.</p>
         </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
+        <div className="flex gap-2 w-full sm:w-auto flex-wrap">
+          <div className="relative flex-1 sm:w-56">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <Input
               placeholder="Filter tickers, names..."
@@ -112,6 +124,16 @@ export default function StocksPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          <Button
+            variant="outline"
+            className="gap-2 shrink-0"
+            onClick={handleRefreshAll}
+            disabled={refreshAllMutation.isPending}
+            title="Refresh all stock prices via Finnhub (runs in background ~2 min)"
+          >
+            <RefreshCw size={16} className={refreshAllMutation.isPending ? "animate-spin" : ""} />
+            Refresh Prices
+          </Button>
           <Button
             variant="outline"
             className="gap-2 shrink-0"

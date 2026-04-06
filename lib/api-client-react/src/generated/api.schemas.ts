@@ -150,3 +150,7 @@ export interface StockSearchResult {
   region: string;
   inDatabase: boolean;
 }
+
+export type RefreshAllStocks202 = {
+  message: string;
+};

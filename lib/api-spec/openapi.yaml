@@ -165,7 +165,7 @@ paths:
     post:
       operationId: refreshStock
       tags: [stocks]
-      summary: Refresh a stock's data from Alpha Vantage
+      summary: Refresh a single stock's data from Finnhub
       security:
         - bearerAuth: []
       parameters:
@@ -181,6 +181,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SuccessResponse"
+
+  /stocks/refresh-all:
+    post:
+      operationId: refreshAllStocks
+      tags: [stocks]
+      summary: Refresh prices for all stocks via Finnhub (background job)
+      security:
+        - bearerAuth: []
+      responses:
+        "202":
+          description: Refresh started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required:
+                  - message
 
   /stocks/{ticker}:
     get:
