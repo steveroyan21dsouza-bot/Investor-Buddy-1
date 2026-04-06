@@ -1293,15 +1293,19 @@ const SEED_STOCKS = [
   { ticker: "LNT", name: "Alliant Energy Corp.", sector: "Utilities", price: 58.4, peRatio: 18.4, debtToEquity: 1.64, epsGrowth: 8, dividendYield: 3.29, roe: 9.4, revenueGrowth: 6, profitMargin: 13.4, currentRatio: 0.44, marketCapB: 15, beta: 0.44 },
   { ticker: "PNW", name: "Pinnacle West Capital Corp.", sector: "Utilities", price: 78.4, peRatio: 16.4, debtToEquity: 1.44, epsGrowth: 8, dividendYield: 4.59, roe: 9.4, revenueGrowth: 9, profitMargin: 12.4, currentRatio: 0.44, marketCapB: 9, beta: 0.44 },
 
-  // ── Real Estate (batch 2) ─────────────────────────────────────────
-
-  // ── Telecom (batch 2) ─────────────────────────────────────────────
 ] as const;
 
 export async function seedStocksIfEmpty() {
-  console.log("[seed] Checking for new stocks to add...");
+  console.log("[seed] Syncing stock universe...");
+
+  const keepTickers = (SEED_STOCKS as readonly { ticker: string }[]).map(s => s.ticker);
+  await db.execute(
+    sql`DELETE FROM stocks WHERE ticker NOT IN (${sql.join(keepTickers.map(t => sql`${t}`), sql`, `)})`
+  );
+
   await db.insert(stocksTable).values(
     SEED_STOCKS.map(s => ({ ...s, updatedAt: new Date() }))
   ).onConflictDoNothing();
+
   console.log("[seed] Stock seed complete.");
 }
