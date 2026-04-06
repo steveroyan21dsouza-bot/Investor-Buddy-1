@@ -275,6 +275,8 @@ export const GetWatchlistResponseItem = zod.object({
   name: zod.string(),
   sector: zod.string(),
   price: zod.number(),
+  peRatio: zod.number().nullish(),
+  dividendYield: zod.number().nullish(),
   addedAt: zod.string(),
 });
 export const GetWatchlistResponse = zod.array(GetWatchlistResponseItem);

@@ -11,5 +11,7 @@ export interface WatchlistItem {
   name: string;
   sector: string;
   price: number;
+  peRatio?: number | null;
+  dividendYield?: number | null;
   addedAt: string;
 }

@@ -712,6 +712,12 @@ components:
           type: string
         price:
           type: number
+        peRatio:
+          type: number
+          nullable: true
+        dividendYield:
+          type: number
+          nullable: true
         addedAt:
           type: string
       required:

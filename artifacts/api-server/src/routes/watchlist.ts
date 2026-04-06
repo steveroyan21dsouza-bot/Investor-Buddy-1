@@ -13,6 +13,8 @@ router.get("/", requireAuth, async (req: AuthenticatedRequest, res) => {
       name: stocksTable.name,
       sector: stocksTable.sector,
       price: stocksTable.price,
+      peRatio: stocksTable.peRatio,
+      dividendYield: stocksTable.dividendYield,
     })
       .from(watchlistTable)
       .leftJoin(stocksTable, eq(watchlistTable.ticker, stocksTable.ticker))
@@ -24,6 +26,8 @@ router.get("/", requireAuth, async (req: AuthenticatedRequest, res) => {
       name: i.name || i.ticker,
       sector: i.sector || "Unknown",
       price: i.price || 0,
+      peRatio: i.peRatio ?? null,
+      dividendYield: i.dividendYield ?? null,
       addedAt: i.addedAt.toISOString(),
     })));
   } catch (err) {
