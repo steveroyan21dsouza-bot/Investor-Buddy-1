@@ -202,6 +202,57 @@ paths:
                 required:
                   - message
 
+  /stocks/quote/{ticker}:
+    get:
+      operationId: getLiveQuote
+      tags: [stocks]
+      summary: Get live quote for a single stock from Finnhub
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Live quote (available=false if Finnhub unavailable)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LiveQuote"
+
+  /stocks/quotes:
+    post:
+      operationId: getBatchQuotes
+      tags: [stocks]
+      summary: Batch live quotes for multiple tickers from Finnhub
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tickers:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - tickers
+      responses:
+        "200":
+          description: Map of ticker to LiveQuote (only includes tickers with data)
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: "#/components/schemas/LiveQuote"
+
   /stocks/{ticker}:
     get:
       operationId: getStock
@@ -720,6 +771,33 @@ components:
         - metric
         - passed
         - value
+
+    LiveQuote:
+      type: object
+      properties:
+        available:
+          type: boolean
+        ticker:
+          type: string
+        price:
+          type: number
+        change:
+          type: number
+        changePercent:
+          type: number
+        high:
+          type: number
+        low:
+          type: number
+        open:
+          type: number
+        prevClose:
+          type: number
+        timestamp:
+          type: number
+      required:
+        - available
+        - ticker
 
     WatchlistItem:
       type: object

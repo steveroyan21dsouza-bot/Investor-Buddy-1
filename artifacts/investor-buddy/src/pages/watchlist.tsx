@@ -8,6 +8,7 @@ import { Trash2, EyeOff, BookmarkPlus } from "lucide-react";
 import { Link } from "wouter";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { useLivePrices, LivePriceCell, LiveTimestamp } from "@/components/LivePrice";
 
 const SECTOR_COLORS: Record<string, string> = {
   Technology:  "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
@@ -23,6 +24,9 @@ export default function WatchlistPage() {
   const { data: watchlist, isLoading } = useGetWatchlist();
   const removeMutation = useRemoveFromWatchlist();
   const queryClient = useQueryClient();
+
+  const tickers = (watchlist ?? []).map(w => w.ticker);
+  const { quotes } = useLivePrices(tickers, !isLoading && tickers.length > 0);
 
   const handleRemove = (ticker: string) => {
     removeMutation.mutate(
@@ -71,7 +75,11 @@ export default function WatchlistPage() {
                   <tr className="border-b border-border">
                     <th className="px-3 py-2 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide">Stock</th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wide hidden sm:table-cell">Sector</th>
-                    <th className="px-3 py-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">Price</th>
+                    <th className="px-3 py-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      <span className="flex flex-col items-end gap-0.5">
+                        Price <LiveTimestamp quotes={quotes} />
+                      </span>
+                    </th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide hidden md:table-cell">P/E</th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide hidden md:table-cell">Div. Yield</th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-muted-foreground uppercase tracking-wide hidden lg:table-cell">Added</th>
@@ -97,8 +105,8 @@ export default function WatchlistPage() {
                         <td className="px-3 py-3 hidden sm:table-cell">
                           <Badge className={`${sectorColor} border-0 text-xs`}>{item.sector}</Badge>
                         </td>
-                        <td className="px-3 py-3 text-right font-mono font-bold text-foreground">
-                          ${item.price?.toFixed(2)}
+                        <td className="px-3 py-3 text-right">
+                          <LivePriceCell ticker={item.ticker} fallbackPrice={item.price ?? 0} quotes={quotes} />
                         </td>
                         <td className="px-3 py-3 text-right font-mono text-muted-foreground text-xs hidden md:table-cell">
                           {item.peRatio != null ? `${item.peRatio.toFixed(1)}x` : "—"}

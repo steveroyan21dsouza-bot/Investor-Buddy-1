@@ -108,6 +108,19 @@ export interface ScreenResult {
   criteriaResults: CriterionResult[];
 }
 
+export interface LiveQuote {
+  available: boolean;
+  ticker: string;
+  price?: number;
+  change?: number;
+  changePercent?: number;
+  high?: number;
+  low?: number;
+  open?: number;
+  prevClose?: number;
+  timestamp?: number;
+}
+
 export interface WatchlistItem {
   ticker: string;
   name: string;
@@ -154,3 +167,9 @@ export interface StockSearchResult {
 export type RefreshAllStocks202 = {
   message: string;
 };
+
+export type GetBatchQuotesBody = {
+  tickers: string[];
+};
+
+export type GetBatchQuotes200 = { [key: string]: LiveQuote };

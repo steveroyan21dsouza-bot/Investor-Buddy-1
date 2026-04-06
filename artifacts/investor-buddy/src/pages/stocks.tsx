@@ -12,6 +12,7 @@ import {
   getGetWatchlistQueryKey,
   getGetStocksQueryKey,
 } from "@workspace/api-client-react";
+import { useLivePrices, LivePriceCell, LiveTimestamp } from "@/components/LivePrice";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -47,6 +48,9 @@ export default function StocksPage() {
       onError: () => toast({ variant: "destructive", title: "Refresh failed", description: "Could not start refresh. Check FINNHUB_API_KEY." }),
     });
   };
+
+  const tickers = (stocks ?? []).map(s => s.ticker);
+  const { quotes } = useLivePrices(tickers, !isLoading && tickers.length > 0);
 
   const { data: searchResults, isFetching: isSearching } = useSearchStocks(avQuery, {
     query: { enabled: avQuery.length >= 2 },
@@ -205,7 +209,11 @@ export default function StocksPage() {
             <thead className="text-xs text-muted-foreground uppercase bg-muted/50">
               <tr>
                 <th className="px-4 py-3 font-medium">Asset</th>
-                <th className="px-4 py-3 font-medium text-right">Price</th>
+                <th className="px-4 py-3 font-medium text-right">
+                  <span className="flex flex-col items-end gap-0.5">
+                    Price <LiveTimestamp quotes={quotes} />
+                  </span>
+                </th>
                 <th className="px-4 py-3 font-medium text-right">P/E</th>
                 <th className="px-4 py-3 font-medium text-right">EPS Gr %</th>
                 <th className="px-4 py-3 font-medium text-right">Rev Gr %</th>
@@ -232,7 +240,9 @@ export default function StocksPage() {
                         <div className="font-bold text-foreground">{stock.ticker}</div>
                         <div className="text-xs text-muted-foreground truncate w-32" title={stock.name}>{stock.name}</div>
                       </td>
-                      <td className="px-4 py-3 text-right font-mono font-medium">${stock.price.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <LivePriceCell ticker={stock.ticker} fallbackPrice={stock.price} quotes={quotes} />
+                      </td>
                       <td className="px-4 py-3 text-right font-mono">{stock.peRatio.toFixed(1)}</td>
                       <td className={`px-4 py-3 text-right font-mono ${stock.epsGrowth > 0 ? 'text-primary' : 'text-destructive'}`}>
                         {stock.epsGrowth > 0 ? '+' : ''}{stock.epsGrowth.toFixed(1)}

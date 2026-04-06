@@ -25,7 +25,10 @@ import type {
   CriteriaSet,
   DashboardSummary,
   ErrorResponse,
+  GetBatchQuotes200,
+  GetBatchQuotesBody,
   HealthStatus,
+  LiveQuote,
   RefreshAllStocks202,
   ScreenRequest,
   ScreenResult,
@@ -692,6 +695,179 @@ export const useRefreshAllStocks = <
   TContext
 > => {
   return useMutation(getRefreshAllStocksMutationOptions(options));
+};
+
+/**
+ * @summary Get live quote for a single stock from Finnhub
+ */
+export const getGetLiveQuoteUrl = (ticker: string) => {
+  return `/api/stocks/quote/${ticker}`;
+};
+
+export const getLiveQuote = async (
+  ticker: string,
+  options?: RequestInit,
+): Promise<LiveQuote> => {
+  return customFetch<LiveQuote>(getGetLiveQuoteUrl(ticker), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetLiveQuoteQueryKey = (ticker: string) => {
+  return [`/api/stocks/quote/${ticker}`] as const;
+};
+
+export const getGetLiveQuoteQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLiveQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  ticker: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getLiveQuote>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLiveQuoteQueryKey(ticker);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getLiveQuote>>> = ({
+    signal,
+  }) => getLiveQuote(ticker, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!ticker,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getLiveQuote>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetLiveQuoteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLiveQuote>>
+>;
+export type GetLiveQuoteQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get live quote for a single stock from Finnhub
+ */
+
+export function useGetLiveQuote<
+  TData = Awaited<ReturnType<typeof getLiveQuote>>,
+  TError = ErrorType<unknown>,
+>(
+  ticker: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getLiveQuote>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetLiveQuoteQueryOptions(ticker, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Batch live quotes for multiple tickers from Finnhub
+ */
+export const getGetBatchQuotesUrl = () => {
+  return `/api/stocks/quotes`;
+};
+
+export const getBatchQuotes = async (
+  getBatchQuotesBody: GetBatchQuotesBody,
+  options?: RequestInit,
+): Promise<GetBatchQuotes200> => {
+  return customFetch<GetBatchQuotes200>(getGetBatchQuotesUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(getBatchQuotesBody),
+  });
+};
+
+export const getGetBatchQuotesMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getBatchQuotes>>,
+    TError,
+    { data: BodyType<GetBatchQuotesBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof getBatchQuotes>>,
+  TError,
+  { data: BodyType<GetBatchQuotesBody> },
+  TContext
+> => {
+  const mutationKey = ["getBatchQuotes"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof getBatchQuotes>>,
+    { data: BodyType<GetBatchQuotesBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return getBatchQuotes(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type GetBatchQuotesMutationResult = NonNullable<
+  Awaited<ReturnType<typeof getBatchQuotes>>
+>;
+export type GetBatchQuotesMutationBody = BodyType<GetBatchQuotesBody>;
+export type GetBatchQuotesMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Batch live quotes for multiple tickers from Finnhub
+ */
+export const useGetBatchQuotes = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof getBatchQuotes>>,
+    TError,
+    { data: BodyType<GetBatchQuotesBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof getBatchQuotes>>,
+  TError,
+  { data: BodyType<GetBatchQuotesBody> },
+  TContext
+> => {
+  return useMutation(getGetBatchQuotesMutationOptions(options));
 };
 
 /**

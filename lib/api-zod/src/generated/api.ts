@@ -111,6 +111,49 @@ export const RefreshStockResponse = zod.object({
 });
 
 /**
+ * @summary Get live quote for a single stock from Finnhub
+ */
+export const GetLiveQuoteParams = zod.object({
+  ticker: zod.coerce.string(),
+});
+
+export const GetLiveQuoteResponse = zod.object({
+  available: zod.boolean(),
+  ticker: zod.string(),
+  price: zod.number().optional(),
+  change: zod.number().optional(),
+  changePercent: zod.number().optional(),
+  high: zod.number().optional(),
+  low: zod.number().optional(),
+  open: zod.number().optional(),
+  prevClose: zod.number().optional(),
+  timestamp: zod.number().optional(),
+});
+
+/**
+ * @summary Batch live quotes for multiple tickers from Finnhub
+ */
+export const GetBatchQuotesBody = zod.object({
+  tickers: zod.array(zod.string()),
+});
+
+export const GetBatchQuotesResponse = zod.record(
+  zod.string(),
+  zod.object({
+    available: zod.boolean(),
+    ticker: zod.string(),
+    price: zod.number().optional(),
+    change: zod.number().optional(),
+    changePercent: zod.number().optional(),
+    high: zod.number().optional(),
+    low: zod.number().optional(),
+    open: zod.number().optional(),
+    prevClose: zod.number().optional(),
+    timestamp: zod.number().optional(),
+  }),
+);
+
+/**
  * @summary Get a stock by ticker
  */
 export const GetStockParams = zod.object({

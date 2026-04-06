@@ -98,6 +98,46 @@ async function fetchFinnhubQuote(ticker: string): Promise<number | null> {
   return data.c ?? null;
 }
 
+interface LiveQuote {
+  price: number;
+  change: number;
+  changePercent: number;
+  high: number;
+  low: number;
+  open: number;
+  prevClose: number;
+  timestamp: number;
+}
+
+const quoteCache = new Map<string, { data: LiveQuote; ts: number }>();
+const QUOTE_CACHE_TTL = 60_000;
+
+async function fetchLiveQuote(ticker: string): Promise<LiveQuote | null> {
+  const cached = quoteCache.get(ticker);
+  if (cached && Date.now() - cached.ts < QUOTE_CACHE_TTL) return cached.data;
+
+  if (!FINNHUB_KEY) return null;
+  try {
+    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${ticker}&token=${FINNHUB_KEY}`);
+    const data = await res.json() as Record<string, any>;
+    if (data.c && data.c > 0) {
+      const quote: LiveQuote = {
+        price: data.c,
+        change: data.d ?? 0,
+        changePercent: data.dp ?? 0,
+        high: data.h ?? 0,
+        low: data.l ?? 0,
+        open: data.o ?? 0,
+        prevClose: data.pc ?? 0,
+        timestamp: Date.now(),
+      };
+      quoteCache.set(ticker, { data: quote, ts: Date.now() });
+      return quote;
+    }
+  } catch { }
+  return null;
+}
+
 router.get("/", requireAuth, async (req, res) => {
   try {
     const stocks = await db.select().from(stocksTable).orderBy(stocksTable.ticker);
@@ -253,6 +293,46 @@ router.post("/refresh-all", requireAuth, async (req: AuthenticatedRequest, res) 
     }
     req.log.info("Refresh-all complete");
   })();
+});
+
+router.get("/quote/:ticker", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const ticker = req.params.ticker.toUpperCase();
+  const quote = await fetchLiveQuote(ticker);
+  if (!quote) {
+    res.json({ available: false, ticker });
+    return;
+  }
+  res.json({ available: true, ticker, ...quote });
+});
+
+router.post("/quotes", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const { tickers } = req.body as { tickers: string[] };
+  if (!tickers?.length) {
+    res.json({});
+    return;
+  }
+  if (!FINNHUB_KEY) {
+    res.json({});
+    return;
+  }
+
+  const results: Record<string, LiveQuote> = {};
+  const chunks: string[][] = [];
+  for (let i = 0; i < tickers.length; i += 10) {
+    chunks.push(tickers.slice(i, i + 10));
+  }
+  for (let i = 0; i < chunks.length; i++) {
+    await Promise.all(
+      chunks[i].map(async (ticker) => {
+        const quote = await fetchLiveQuote(ticker.toUpperCase());
+        if (quote) results[ticker] = quote;
+      })
+    );
+    if (i < chunks.length - 1) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+  res.json(results);
 });
 
 router.get("/:ticker", requireAuth, async (req: AuthenticatedRequest, res) => {
