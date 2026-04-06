@@ -1,7 +1,7 @@
 import { db, stocksTable } from "@workspace/db";
-  import { sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
-  const SEED_STOCKS = [
+const SEED_STOCKS = [
   {
     "ticker": "AAPL",
     "name": "Apple Inc.",
@@ -788,14 +788,13 @@ import { db, stocksTable } from "@workspace/db";
   }
 ] as const;
 
-  export async function seedStocksIfEmpty() {
-    const [{ count }] = await db.select({ count: sql`count(*)`.mapWith(Number) }).from(stocksTable);
-    if (count > 0) return;
+export async function seedStocksIfEmpty() {
+  const [{ count }] = await db.select({ count: sql`count(*)`.mapWith(Number) }).from(stocksTable);
+  if (count > 0) return;
 
-    console.log("[seed] Seeding", SEED_STOCKS.length, "stocks...");
-    await db.insert(stocksTable).values(
-      SEED_STOCKS.map(s => ({ ...s, updatedAt: new Date() }))
-    ).onConflictDoNothing();
-    console.log("[seed] Done.");
-  }
-  
+  console.log("[seed] Seeding", SEED_STOCKS.length, "stocks...");
+  await db.insert(stocksTable).values(
+    SEED_STOCKS.map(s => ({ ...s, updatedAt: new Date() }))
+  ).onConflictDoNothing();
+  console.log("[seed] Done.");
+}
