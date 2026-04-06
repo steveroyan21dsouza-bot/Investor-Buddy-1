@@ -1,5 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { seedStocksIfEmpty } from "./seed";
 
 const rawPort = process.env["PORT"];
 
@@ -22,4 +23,6 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  seedStocksIfEmpty().catch((e) => logger.error({ err: e }, "Stock seed failed"));
 });
