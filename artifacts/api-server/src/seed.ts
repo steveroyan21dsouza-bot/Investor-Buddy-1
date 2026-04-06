@@ -813,7 +813,73 @@ const SEED_STOCKS = [
   { ticker: "MO", name: "Altria Group Inc.", sector: "Consumer", price: 54.7, peRatio: 10.2, debtToEquity: 999, epsGrowth: 5, dividendYield: 7.34, roe: 999, revenueGrowth: 1, profitMargin: 46.7, currentRatio: 0.42, marketCapB: 93, beta: 0.55 },
   { ticker: "ISRG", name: "Intuitive Surgical Inc.", sector: "Healthcare", price: 494.3, peRatio: 72.4, debtToEquity: 0.0, epsGrowth: 25, dividendYield: 0, roe: 15.3, revenueGrowth: 16, profitMargin: 22.1, currentRatio: 4.37, marketCapB: 176, beta: 1.07 },
   { ticker: "PYPL", name: "PayPal Holdings Inc.", sector: "Financial", price: 76.4, peRatio: 17.8, debtToEquity: 0.59, epsGrowth: 20, dividendYield: 0, roe: 19.5, revenueGrowth: 7, profitMargin: 15.2, currentRatio: 1.28, marketCapB: 77, beta: 1.52 },
-  { ticker: "USB", name: "U.S. Bancorp", sector: "Financial", price: 42.7, peRatio: 12.8, debtToEquity: 1.22, epsGrowth: 4, dividendYield: 4.18, roe: 11.8, revenueGrowth: 2, profitMargin: 18.5, currentRatio: 0.72, marketCapB: 66, beta: 0.98 }
+  { ticker: "USB", name: "U.S. Bancorp", sector: "Financial", price: 42.7, peRatio: 12.8, debtToEquity: 1.22, epsGrowth: 4, dividendYield: 4.18, roe: 11.8, revenueGrowth: 2, profitMargin: 18.5, currentRatio: 0.72, marketCapB: 66, beta: 0.98 },
+
+  // ── Technology ─────────────────────────────────────────────────────
+  { ticker: "CRWD", name: "CrowdStrike Holdings", sector: "Technology", price: 364.5, peRatio: 362, debtToEquity: 0.15, epsGrowth: 2300, dividendYield: 0, roe: 4.1, revenueGrowth: 29, profitMargin: 0.8, currentRatio: 1.83, marketCapB: 88, beta: 1.12 },
+  { ticker: "SNOW", name: "Snowflake Inc.", sector: "Technology", price: 148.2, peRatio: 999, debtToEquity: 0.0, epsGrowth: 0, dividendYield: 0, roe: -16.2, revenueGrowth: 29, profitMargin: -13.8, currentRatio: 3.11, marketCapB: 50, beta: 1.37 },
+  { ticker: "PLTR", name: "Palantir Technologies", sector: "Technology", price: 92.5, peRatio: 218, debtToEquity: 0.0, epsGrowth: 141, dividendYield: 0, roe: 11.3, revenueGrowth: 29, profitMargin: 15.6, currentRatio: 5.89, marketCapB: 200, beta: 1.71 },
+  { ticker: "UBER", name: "Uber Technologies Inc.", sector: "Technology", price: 72.1, peRatio: 24.5, debtToEquity: 0.92, epsGrowth: 0, dividendYield: 0, roe: 32.7, revenueGrowth: 20, profitMargin: 11.3, currentRatio: 1.38, marketCapB: 153, beta: 1.45 },
+  { ticker: "ANET", name: "Arista Networks Inc.", sector: "Technology", price: 381.2, peRatio: 46.5, debtToEquity: 0.0, epsGrowth: 38, dividendYield: 0, roe: 32.0, revenueGrowth: 19, profitMargin: 39.4, currentRatio: 4.01, marketCapB: 120, beta: 1.01 },
+  { ticker: "MU", name: "Micron Technology Inc.", sector: "Technology", price: 89.4, peRatio: 12.3, debtToEquity: 0.28, epsGrowth: 0, dividendYield: 0.44, roe: 22.9, revenueGrowth: 62, profitMargin: 22.8, currentRatio: 2.75, marketCapB: 99, beta: 1.43 },
+  { ticker: "AMAT", name: "Applied Materials Inc.", sector: "Technology", price: 157.8, peRatio: 18.3, debtToEquity: 0.53, epsGrowth: 7, dividendYield: 0.96, roe: 45.7, revenueGrowth: 7, profitMargin: 26.8, currentRatio: 2.17, marketCapB: 133, beta: 1.37 },
+  { ticker: "LRCX", name: "Lam Research Corp.", sector: "Technology", price: 740.5, peRatio: 22.1, debtToEquity: 0.71, epsGrowth: 8, dividendYield: 1.08, roe: 72.5, revenueGrowth: 24, profitMargin: 26.3, currentRatio: 2.37, marketCapB: 97, beta: 1.35 },
+  { ticker: "ADSK", name: "Autodesk Inc.", sector: "Technology", price: 270.3, peRatio: 39.4, debtToEquity: 2.19, epsGrowth: 58, dividendYield: 0, roe: 56.5, revenueGrowth: 12, profitMargin: 18.5, currentRatio: 0.84, marketCapB: 59, beta: 1.15 },
+  { ticker: "APP", name: "Applovin Corp.", sector: "Technology", price: 271.4, peRatio: 56.2, debtToEquity: 2.16, epsGrowth: 0, dividendYield: 0, roe: 101.8, revenueGrowth: 44, profitMargin: 28.2, currentRatio: 2.93, marketCapB: 91, beta: 1.45 },
+  { ticker: "FTNT", name: "Fortinet Inc.", sector: "Technology", price: 93.4, peRatio: 35.7, debtToEquity: 999, epsGrowth: 57, dividendYield: 0, roe: 999, revenueGrowth: 11, profitMargin: 23.3, currentRatio: 1.49, marketCapB: 71, beta: 1.06 },
+
+  // ── Financial ──────────────────────────────────────────────────────
+  { ticker: "BLK", name: "BlackRock Inc.", sector: "Financial", price: 900.5, peRatio: 21.4, debtToEquity: 0.38, epsGrowth: 11, dividendYield: 2.32, roe: 15.2, revenueGrowth: 14, profitMargin: 28.3, currentRatio: 0.96, marketCapB: 137, beta: 1.28 },
+  { ticker: "SCHW", name: "Charles Schwab Corp.", sector: "Financial", price: 67.3, peRatio: 21.7, debtToEquity: 0.61, epsGrowth: -27, dividendYield: 1.55, roe: 12.7, revenueGrowth: -3, profitMargin: 30.2, currentRatio: 0.65, marketCapB: 121, beta: 1.21 },
+  { ticker: "COF", name: "Capital One Financial", sector: "Financial", price: 151.2, peRatio: 12.4, debtToEquity: 0.79, epsGrowth: -8, dividendYield: 1.85, roe: 9.5, revenueGrowth: 6, profitMargin: 19.8, currentRatio: 0.91, marketCapB: 57, beta: 1.44 },
+  { ticker: "ICE", name: "Intercontinental Exchange", sector: "Financial", price: 159.3, peRatio: 32.5, debtToEquity: 0.83, epsGrowth: 10, dividendYield: 1.11, roe: 11.2, revenueGrowth: 17, profitMargin: 23.8, currentRatio: 1.01, marketCapB: 91, beta: 0.89 },
+  { ticker: "CME", name: "CME Group Inc.", sector: "Financial", price: 225.7, peRatio: 23.8, debtToEquity: 0.13, epsGrowth: 5, dividendYield: 4.63, roe: 10.8, revenueGrowth: 9, profitMargin: 57.1, currentRatio: 1.03, marketCapB: 81, beta: 0.48 },
+  { ticker: "PNC", name: "PNC Financial Services", sector: "Financial", price: 163.5, peRatio: 12.9, debtToEquity: 0.92, epsGrowth: 4, dividendYield: 3.79, roe: 11.3, revenueGrowth: 2, profitMargin: 21.4, currentRatio: 0.75, marketCapB: 65, beta: 1.07 },
+
+  // ── Healthcare ─────────────────────────────────────────────────────
+  { ticker: "CVS", name: "CVS Health Corp.", sector: "Healthcare", price: 66.3, peRatio: 9.4, debtToEquity: 0.97, epsGrowth: -34, dividendYield: 4.15, roe: 9.2, revenueGrowth: 4, profitMargin: 1.7, currentRatio: 0.88, marketCapB: 83, beta: 0.54 },
+  { ticker: "CI", name: "Cigna Group", sector: "Healthcare", price: 292.4, peRatio: 14.2, debtToEquity: 0.72, epsGrowth: -19, dividendYield: 1.85, roe: 16.8, revenueGrowth: 24, profitMargin: 3.2, currentRatio: 0.74, marketCapB: 72, beta: 0.58 },
+  { ticker: "HCA", name: "HCA Healthcare Inc.", sector: "Healthcare", price: 318.7, peRatio: 14.8, debtToEquity: 999, epsGrowth: 11, dividendYield: 0.92, roe: 999, revenueGrowth: 8, profitMargin: 8.5, currentRatio: 1.27, marketCapB: 79, beta: 0.63 },
+  { ticker: "BSX", name: "Boston Scientific Corp.", sector: "Healthcare", price: 92.3, peRatio: 57.1, debtToEquity: 0.59, epsGrowth: 29, dividendYield: 0, roe: 11.1, revenueGrowth: 17, profitMargin: 9.9, currentRatio: 2.07, marketCapB: 135, beta: 0.94 },
+  { ticker: "ABT", name: "Abbott Laboratories", sector: "Healthcare", price: 130.4, peRatio: 24.5, debtToEquity: 0.33, epsGrowth: 2, dividendYield: 1.86, roe: 16.8, revenueGrowth: 5, profitMargin: 16.4, currentRatio: 1.71, marketCapB: 227, beta: 0.71 },
+  { ticker: "SYK", name: "Stryker Corp.", sector: "Healthcare", price: 373.5, peRatio: 38.9, debtToEquity: 0.64, epsGrowth: 14, dividendYield: 0.87, roe: 20.3, revenueGrowth: 10, profitMargin: 13.8, currentRatio: 1.69, marketCapB: 141, beta: 0.81 },
+
+  // ── Consumer / Retail / Travel ──────────────────────────────────────
+  { ticker: "SBUX", name: "Starbucks Corp.", sector: "Consumer", price: 83.9, peRatio: 22.4, debtToEquity: 999, epsGrowth: -29, dividendYield: 3.33, roe: 999, revenueGrowth: -1, profitMargin: 9.1, currentRatio: 0.71, marketCapB: 95, beta: 0.88 },
+  { ticker: "CMG", name: "Chipotle Mexican Grill", sector: "Consumer", price: 51.8, peRatio: 47.3, debtToEquity: 1.64, epsGrowth: 25, dividendYield: 0, roe: 44.3, revenueGrowth: 15, profitMargin: 13.5, currentRatio: 1.73, marketCapB: 71, beta: 1.21 },
+  { ticker: "TJX", name: "TJX Companies Inc.", sector: "Consumer", price: 121.5, peRatio: 28.4, debtToEquity: 0.69, epsGrowth: 11, dividendYield: 1.41, roe: 63.1, revenueGrowth: 6, profitMargin: 9.2, currentRatio: 1.28, marketCapB: 137, beta: 0.72 },
+  { ticker: "BKNG", name: "Booking Holdings Inc.", sector: "Consumer", price: 4895.0, peRatio: 28.7, debtToEquity: 999, epsGrowth: 23, dividendYield: 1.04, roe: 999, revenueGrowth: 11, profitMargin: 27.1, currentRatio: 1.61, marketCapB: 149, beta: 1.28 },
+  { ticker: "MAR", name: "Marriott International", sector: "Consumer", price: 241.5, peRatio: 25.1, debtToEquity: 999, epsGrowth: 15, dividendYield: 1.16, roe: 999, revenueGrowth: 6, profitMargin: 12.3, currentRatio: 0.47, marketCapB: 69, beta: 1.24 },
+  { ticker: "ABNB", name: "Airbnb Inc.", sector: "Consumer", price: 135.4, peRatio: 32.1, debtToEquity: 0.15, epsGrowth: 11, dividendYield: 0, roe: 27.4, revenueGrowth: 12, profitMargin: 22.9, currentRatio: 2.22, marketCapB: 85, beta: 1.58 },
+
+  // ── Industrials / Defense / Transport ──────────────────────────────
+  { ticker: "BA", name: "Boeing Co.", sector: "Industrial", price: 174.5, peRatio: 999, debtToEquity: 999, epsGrowth: 0, dividendYield: 0, roe: -33.5, revenueGrowth: 17, profitMargin: -5.7, currentRatio: 1.10, marketCapB: 134, beta: 1.44 },
+  { ticker: "LMT", name: "Lockheed Martin Corp.", sector: "Industrial", price: 449.2, peRatio: 17.3, debtToEquity: 999, epsGrowth: -3, dividendYield: 2.83, roe: 999, revenueGrowth: 5, profitMargin: 8.7, currentRatio: 1.20, marketCapB: 105, beta: 0.45 },
+  { ticker: "GD", name: "General Dynamics Corp.", sector: "Industrial", price: 272.4, peRatio: 19.4, debtToEquity: 0.46, epsGrowth: 14, dividendYield: 2.06, roe: 20.2, revenueGrowth: 9, profitMargin: 8.8, currentRatio: 1.38, marketCapB: 74, beta: 0.45 },
+  { ticker: "NOC", name: "Northrop Grumman Corp.", sector: "Industrial", price: 487.3, peRatio: 15.5, debtToEquity: 1.08, epsGrowth: 8, dividendYield: 1.71, roe: 34.8, revenueGrowth: 6, profitMargin: 11.3, currentRatio: 1.21, marketCapB: 71, beta: 0.45 },
+  { ticker: "FDX", name: "FedEx Corp.", sector: "Industrial", price: 250.3, peRatio: 14.3, debtToEquity: 1.14, epsGrowth: -0.5, dividendYield: 2.09, roe: 18.5, revenueGrowth: -2, profitMargin: 4.6, currentRatio: 1.36, marketCapB: 63, beta: 1.19 },
+  { ticker: "DAL", name: "Delta Air Lines Inc.", sector: "Industrial", price: 45.3, peRatio: 7.8, debtToEquity: 2.72, epsGrowth: 14, dividendYield: 1.38, roe: 38.9, revenueGrowth: 7, profitMargin: 5.4, currentRatio: 0.44, marketCapB: 29, beta: 1.32 },
+
+  // ── Energy ────────────────────────────────────────────────────────
+  { ticker: "OXY", name: "Occidental Petroleum", sector: "Energy", price: 47.2, peRatio: 15.1, debtToEquity: 0.73, epsGrowth: -44, dividendYield: 1.62, roe: 11.6, revenueGrowth: -6, profitMargin: 9.4, currentRatio: 1.08, marketCapB: 44, beta: 1.45 },
+  { ticker: "COP", name: "ConocoPhillips", sector: "Energy", price: 96.3, peRatio: 12.8, debtToEquity: 0.37, epsGrowth: -25, dividendYield: 3.06, roe: 16.7, revenueGrowth: -10, profitMargin: 16.3, currentRatio: 1.51, marketCapB: 123, beta: 1.12 },
+  { ticker: "EOG", name: "EOG Resources Inc.", sector: "Energy", price: 116.8, peRatio: 11.7, debtToEquity: 0.18, epsGrowth: -12, dividendYield: 3.14, roe: 18.5, revenueGrowth: -3, profitMargin: 25.1, currentRatio: 1.62, marketCapB: 68, beta: 1.11 },
+  { ticker: "PSX", name: "Phillips 66", sector: "Energy", price: 128.4, peRatio: 14.2, debtToEquity: 0.73, epsGrowth: -39, dividendYield: 3.44, roe: 14.3, revenueGrowth: -13, profitMargin: 2.2, currentRatio: 1.31, marketCapB: 51, beta: 1.05 },
+  { ticker: "KMI", name: "Kinder Morgan Inc.", sector: "Energy", price: 27.8, peRatio: 21.5, debtToEquity: 1.06, epsGrowth: 8, dividendYield: 4.20, roe: 8.5, revenueGrowth: 7, profitMargin: 16.4, currentRatio: 0.54, marketCapB: 61, beta: 0.97 },
+
+  // ── Real Estate ───────────────────────────────────────────────────
+  { ticker: "PLD", name: "Prologis Inc.", sector: "Financial", price: 104.3, peRatio: 37.2, debtToEquity: 0.73, epsGrowth: -30, dividendYield: 3.51, roe: 6.5, revenueGrowth: 9, profitMargin: 26.9, currentRatio: 0.43, marketCapB: 96, beta: 1.07 },
+  { ticker: "EQIX", name: "Equinix Inc.", sector: "Financial", price: 868.5, peRatio: 81.2, debtToEquity: 1.96, epsGrowth: -35, dividendYield: 2.23, roe: 4.9, revenueGrowth: 7, profitMargin: 8.4, currentRatio: 1.41, marketCapB: 74, beta: 1.08 },
+
+  // ── Materials ─────────────────────────────────────────────────────
+  { ticker: "LIN", name: "Linde plc", sector: "Industrial", price: 440.5, peRatio: 31.5, debtToEquity: 0.28, epsGrowth: 11, dividendYield: 1.25, roe: 17.8, revenueGrowth: 2, profitMargin: 20.1, currentRatio: 0.89, marketCapB: 214, beta: 0.86 },
+  { ticker: "FCX", name: "Freeport-McMoRan Inc.", sector: "Industrial", price: 35.8, peRatio: 16.9, debtToEquity: 0.53, epsGrowth: 24, dividendYield: 1.45, roe: 20.6, revenueGrowth: 17, profitMargin: 15.3, currentRatio: 1.97, marketCapB: 52, beta: 1.71 },
+  { ticker: "NEM", name: "Newmont Corp.", sector: "Industrial", price: 44.2, peRatio: 18.3, debtToEquity: 0.39, epsGrowth: 0, dividendYield: 2.31, roe: 5.0, revenueGrowth: 65, profitMargin: 9.8, currentRatio: 2.21, marketCapB: 50, beta: 0.50 },
+  { ticker: "APD", name: "Air Products & Chemicals", sector: "Industrial", price: 284.6, peRatio: 20.9, debtToEquity: 1.09, epsGrowth: 4, dividendYield: 2.60, roe: 16.6, revenueGrowth: -4, profitMargin: 21.3, currentRatio: 1.62, marketCapB: 64, beta: 0.80 },
+
+  // ── Telecom / Media ───────────────────────────────────────────────
+  { ticker: "TMUS", name: "T-Mobile US Inc.", sector: "Telecom", price: 228.3, peRatio: 26.7, debtToEquity: 1.42, epsGrowth: 56, dividendYield: 1.48, roe: 15.8, revenueGrowth: 4, profitMargin: 12.1, currentRatio: 0.88, marketCapB: 267, beta: 0.58 },
+  { ticker: "CMCSA", name: "Comcast Corp.", sector: "Telecom", price: 37.8, peRatio: 10.4, debtToEquity: 1.63, epsGrowth: 6, dividendYield: 3.28, roe: 17.5, revenueGrowth: 2, profitMargin: 10.8, currentRatio: 0.73, marketCapB: 149, beta: 0.85 }
 ] as const;
 
 export async function seedStocksIfEmpty() {
