@@ -9,6 +9,19 @@ const anthropic = new Anthropic({
   baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
 });
 
+const METRIC_NAMES: Record<string, string> = {
+  pe_ratio: "P/E Ratio",
+  debt_to_equity: "Debt-to-Equity",
+  eps_growth: "EPS Growth (%)",
+  dividend_yield: "Dividend Yield (%)",
+  roe: "Return on Equity (%)",
+  revenue_growth: "Revenue Growth (%)",
+  profit_margin: "Profit Margin (%)",
+  current_ratio: "Current Ratio",
+  market_cap_b: "Market Cap ($B)",
+  beta: "Beta",
+};
+
 router.post("/", requireAuth, async (req: AuthenticatedRequest, res) => {
   const { ticker, stock, criteria, score } = req.body;
 
@@ -18,62 +31,64 @@ router.post("/", requireAuth, async (req: AuthenticatedRequest, res) => {
   }
 
   try {
-    const METRIC_NAMES: Record<string, string> = {
-      pe_ratio: "P/E Ratio",
-      debt_to_equity: "Debt-to-Equity",
-      eps_growth: "EPS Growth (%)",
-      dividend_yield: "Dividend Yield (%)",
-      roe: "ROE (%)",
-      revenue_growth: "Revenue Growth (%)",
-      profit_margin: "Profit Margin (%)",
-      current_ratio: "Current Ratio",
-      market_cap_b: "Market Cap ($B)",
-      beta: "Beta",
-    };
-
-    let criteriaBreakdown = "No specific criteria were applied.";
+    let criteriaSection = "";
     if (criteria && criteria.length > 0) {
-      criteriaBreakdown = criteria.map((c: { metric: string; operator: string; value: number; value2?: number }) => {
-        const opLabel = c.operator === "between" ? "between" : c.operator;
-        const threshold = c.operator === "between" ? `${c.value}–${c.value2}` : c.value;
-        const metricName = METRIC_NAMES[c.metric] || c.metric;
-        return `${metricName}: threshold ${opLabel} ${threshold}`;
-      }).join("\n");
+      criteriaSection = criteria
+        .map((c: { metric: string; operator: string; value: number; value2?: number }) => {
+          const name = METRIC_NAMES[c.metric] || c.metric;
+          const threshold =
+            c.operator === "between"
+              ? `between ${c.value} and ${c.value2}`
+              : `${c.operator} ${c.value}`;
+          return `  • ${name}: must be ${threshold}`;
+        })
+        .join("\n");
     }
 
-    const prompt = `You are a financial analysis assistant for Investor Buddy. Analyze ${stock.name} (${ticker}) in the ${stock.sector} sector.
+    const prompt = `You are a financial analysis assistant for Investor Buddy, a stock screening tool used in ENTI 674 at Haskayne School of Business.
 
-Score: ${score}/100
-${criteria && criteria.length > 0 ? `Criteria applied:\n${criteriaBreakdown}` : "No screening criteria were applied. Provide a general overview of the stock's financial health."}
+Analyze ${stock.name} (${ticker}) — ${stock.sector} sector. Screening score: ${score}/100.
 
-Key financial data:
+FINANCIAL DATA:
 - Price: $${stock.price}
-- P/E Ratio: ${stock.peRatio}
+- P/E Ratio: ${stock.peRatio}x
 - Debt-to-Equity: ${stock.debtToEquity}
 - EPS Growth: ${stock.epsGrowth}%
 - Dividend Yield: ${stock.dividendYield}%
-- ROE: ${stock.roe}%
+- Return on Equity: ${stock.roe}%
 - Revenue Growth: ${stock.revenueGrowth}%
 - Profit Margin: ${stock.profitMargin}%
 - Current Ratio: ${stock.currentRatio}
 - Market Cap: $${stock.marketCapB}B
 - Beta: ${stock.beta}
 
-Rules:
-- Write 3-4 concise paragraphs in plain language
-- ${criteria && criteria.length > 0 ? "Explain which criteria the stock passes or fails and what that means for the investor's strategy" : "Assess the stock's strengths and weaknesses based on its financial metrics"}
-- Be factual and objective — no predictions or investment advice
-- End with what the investor should consider further
+${criteria && criteria.length > 0 ? `SCREENING CRITERIA APPLIED:\n${criteriaSection}` : "No screening criteria were applied."}
 
-Keep language accessible to a retail investor.`;
+Respond using EXACTLY this format with these four section headers:
+
+## Investment Thesis
+One sentence capturing what type of investor this stock is designed for based on the criteria applied.
+
+## Criteria Results
+For each criterion above, one bullet line: state whether the stock passes or fails and briefly explain what the actual value means in plain language.
+
+## Strengths & Risks
+Two or three bullet strengths, then two or three bullet risks. Label them with "+" for strengths and "−" for risks.
+
+## Bottom Line
+One to two sentences: a plain-language verdict on whether this stock is a fit for the strategy, and one thing the investor should investigate further before deciding.
+
+Rules: be factual, no predictions, no investment advice, accessible language for a business student.`;
 
     const message = await anthropic.messages.create({
-      model: "claude-haiku-4-5",
-      max_tokens: 500,
+      model: "claude-sonnet-4-5",
+      max_tokens: 900,
       messages: [{ role: "user", content: prompt }],
     });
 
-    const text = message.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+    const text = message.content
+      .map((b) => (b.type === "text" ? b.text : ""))
+      .join("");
     res.json({ explanation: text });
   } catch (err) {
     req.log.error({ err }, "AI analysis error");
