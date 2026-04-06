@@ -1295,12 +1295,19 @@ const SEED_STOCKS = [
 
 ] as const;
 
+const REMOVED_TICKERS = [
+  "GDXJ","OLN","WLK","CCK","AMCR","ATI","LAMR","GLPI","REXR","NNN","CUBE",
+  "NXST","LYFT","PENN","CZR","GPS","M","VFC","SIG","RH","WH","LW","PDCO",
+  "XRAY","TFX","ELAN","QRVO","SRPT","JAZZ","EHC","RPRX","CRL","EXAS","ILMN",
+  "LECO","RHI","R","CLH","SAIC","HII","TXT","GGG","SNA","PNR","ALLE","IEX",
+  "AOS","NVT"
+] as const;
+
 export async function seedStocksIfEmpty() {
   console.log("[seed] Syncing stock universe...");
 
-  const keepTickers = (SEED_STOCKS as readonly { ticker: string }[]).map(s => s.ticker);
   await db.execute(
-    sql`DELETE FROM stocks WHERE ticker NOT IN (${sql.join(keepTickers.map(t => sql`${t}`), sql`, `)})`
+    sql`DELETE FROM stocks WHERE ticker IN (${sql.join(REMOVED_TICKERS.map(t => sql`${t}`), sql`, `)})`
   );
 
   await db.insert(stocksTable).values(
